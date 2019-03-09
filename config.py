@@ -17,7 +17,6 @@ class ProductionConfig(object):
 
 
 class DevelopConfig(object):
-    DEBUG = True
     BIND = '0.0.0.0:5000'
     TIMEOUT = 30
     WORKERS = 2

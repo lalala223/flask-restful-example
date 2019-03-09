@@ -7,7 +7,7 @@ from flask_migrate import Migrate, MigrateCommand
 from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 from multiprocessing import cpu_count
-from app import create_app, db
+from example import create_app, db
 from config import Config
 
 app = create_app(Config)
@@ -63,6 +63,11 @@ def run():
         'pidfile': app.config.get('PID_FILE'),
     }
     StandaloneApplication(app, service_config).run()
+
+
+@manager.command
+def debug():
+    app.run(debug=True)
 
 
 if __name__ == '__main__':

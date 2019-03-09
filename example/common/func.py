@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from common.code import CODE_MSG_MAP
+from example.common.code import CODE_MSG_MAP
 
 
 def pretty_result(code, msg=None, data=None):

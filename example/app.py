@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
-import pprint
 import flask_restful
 import logging.handlers
 from flask import Flask, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from common.func import pretty_result
-from common.code import Code
-from config import Config
+from example.common.func import pretty_result
+from example.common.code import Code
 
 app = Flask(__name__)
 
@@ -65,7 +63,7 @@ def create_app(config):
     # 数据库初始化设置
     db.init_app(app)
     # 注册蓝图
-    from routes import api_v1
+    from example.routes import api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1')
     # 使用flask原生异常处理程序
     app.handle_exception = handle_exception
@@ -77,9 +75,3 @@ def create_app(config):
     app.logger.addHandler(_rotating_file_handler())
     app.logger.setLevel(app.config.get('LOG_LEVEL', logging.NOTSET))
     return app
-
-
-if __name__ == '__main__':
-    app = create_app(Config)
-    pprint.pprint(list(app.url_map.iter_rules()))
-    app.run()

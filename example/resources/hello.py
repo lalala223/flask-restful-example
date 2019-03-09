@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
-from app import app
-from common.code import Code
-from common.func import pretty_result
+from example.app import app
+from example.common.code import Code
+from example.common.func import pretty_result
 
 
 class HelloWorld(Resource):
