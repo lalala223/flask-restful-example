@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint
 from flask_restful import Api
-from example.resources.profiles import ProfilesAPI
+from example.resources.profiles import ProfilesExampleAPI
 
 api_v1 = Blueprint('api_v1', __name__)
 
 api = Api(api_v1)
 
-api.add_resource(ProfilesAPI, '/profiles')
+api.add_resource(ProfilesExampleAPI, '/profiles')

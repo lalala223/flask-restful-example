@@ -9,7 +9,10 @@ from example.common.code import Code
 from example.common.func import pretty_result
 
 
-class ProfilesAPI(Resource):
+class ProfilesExampleAPI(Resource):
+    """
+    示例资源类
+    """
     def __init__(self):
         self.parser = RequestParser()
 

@@ -50,7 +50,7 @@ def _rotating_file_handler():
     file_handler = logging.handlers.RotatingFileHandler(
         filename=app_log_path, maxBytes=max_bytes, backupCount=backup_count
     )
-    file_handler.setLevel(app.config.get('LOG_LEVEL') or logging.NOTSET)
+    file_handler.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
     formatter = logging.Formatter('[%(asctime)s][%(levelname)s][%(filename)s][%(lineno)d]:%(message)s')
     file_handler.setFormatter(formatter)
     return file_handler

@@ -19,7 +19,6 @@ class ProductionConfig(object):
     PID_FILE = 'example.pid'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'example.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    pass
 
 
 class DevelopConfig(object):
