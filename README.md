@@ -22,7 +22,7 @@ python manager.py run
 ```
 
 #### 示例APIs
-#####创建profile记录  
+##### 创建profile记录  
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：POST  
 参数格式：JSON  
@@ -40,7 +40,7 @@ curl -H "Content-type: application/json" -d '{"nickname":"lalala223","signature"
 }
 ```
 
-#####获取profile记录  
+##### 获取profile记录  
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：GET  
 参数格式：Query String  
