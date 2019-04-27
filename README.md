@@ -29,7 +29,7 @@ python manager.py run
 输入参数：[nickname, signature]  
 调用示例：
 ```bash
-curl -H "Content-type: application/json" -d '{"nickname":"lalala223","signature":"积硅步，至千里"}' -X POST http://127.0.0.1:5000/api/v1/profiles
+curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature":"积硅步，至千里"}' -X POST 'http://127.0.0.1:5000/api/v1/profiles'
 ```
 返回示例：
 ```json
@@ -47,7 +47,7 @@ curl -H "Content-type: application/json" -d '{"nickname":"lalala223","signature"
 输入参数：[page_num, page_size]  
 调用示例：
 ```bash
-curl http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10
+curl 'http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10'
 ```
 返回示例：
 ```json
