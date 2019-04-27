@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gevent import monkey; monkey.patch_all()
+from gevent import monkey;monkey.patch_all()
 import os
 from abc import ABC
 from flask_script import Manager
@@ -20,7 +20,9 @@ manager.add_command('db', MigrateCommand)
 
 
 class StandaloneApplication(BaseApplication, ABC):
-    """gunicorn服务器启动类"""
+    """
+    gunicorn服务器启动类
+    """
 
     def __init__(self, application, options):
         self.application = application
@@ -39,34 +41,33 @@ class StandaloneApplication(BaseApplication, ABC):
 
 @manager.command
 def run():
-    """项目启动命令函数 To use: python3 manager.py run"""
-    if app.config.get('LOG_FILE_PATH'):
-        error_log_path = os.path.join(app.config['LOG_DIR_PATH'], 'errorlog.log')
-        access_log_path = os.path.join(app.config['LOG_DIR_PATH'], 'accesslog.log')
-    else:
-        error_log_path = os.path.join(os.path.dirname(__file__), 'logs/errorlog.log')
-        access_log_path = os.path.join(os.path.dirname(__file__), 'logs/accesslog.log')
-
-    if not os.path.exists(os.path.dirname(error_log_path)):
-        os.makedirs(os.path.dirname(error_log_path))
-    if not os.path.exists(os.path.dirname(access_log_path)):
-        os.makedirs(os.path.dirname(access_log_path))
+    """
+    生产模式启动命令函数
+    To use: python3 manager.py run
+    """
+    log_path = app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
+    if not os.path.exists(os.path.dirname(log_path)):
+        os.makedirs(os.path.dirname(log_path))
 
     service_config = {
-        'bind': app.config.get('BIND') or '0.0.0.0:5000',
-        'workers': app.config.get('WORKERS') or cpu_count() * 2 + 1,
+        'bind': app.config.get('BIND', '0.0.0.0:5000'),
+        'workers': app.config.get('WORKERS', cpu_count() * 2 + 1),
         'worker_class': 'gevent',
-        'timeout': app.config.get('TIMEOUT') or 60,
-        'loglevel': app.config.get('LOG_LEVEL') or 'debug',
-        'errorlog': error_log_path,
-        'accesslog': access_log_path,
-        'pidfile': app.config.get('PID_FILE'),
+        'timeout': app.config.get('TIMEOUT', 60),
+        'loglevel': app.config.get('LOG_LEVEL', 'info'),
+        'errorlog': os.path.join(log_path, 'error.log'),
+        'accesslog': os.path.join(log_path, 'access.log'),
+        'pidfile': app.config.get('PID_FILE', 'run.pid'),
     }
     StandaloneApplication(app, service_config).run()
 
 
 @manager.command
 def debug():
+    """
+    debug模式启动命令函数
+    To use: python3 manager.py debug
+    """
     app.run(debug=True)
 
 

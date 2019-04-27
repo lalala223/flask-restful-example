@@ -2,7 +2,9 @@
 
 
 class Code(object):
-    """自定义状态码类"""
+    """
+    自定义状态码类
+    """
     OK = 0
     DB_ERROR = 4001
     PARAM_ERROR = 4101
