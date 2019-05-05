@@ -13,7 +13,7 @@ class ProductionConfig(object):
     TIMEOUT = 60
     WORKERS = multiprocessing.cpu_count() * 2 + 1
     LOG_LEVEL = 'INFO'
-    LOG_DIR_PATH = './logs'
+    LOG_DIR_PATH = os.path.join(os.path.dirname(__file__), 'logs')
     LOG_FILE_MAX_BYTES = 1024 * 1024 * 100
     LOG_FILE_BACKUP_COUNT = 10
     PID_FILE = 'example.pid'
@@ -29,7 +29,7 @@ class DevelopConfig(object):
     TIMEOUT = 30
     WORKERS = 2
     LOG_LEVEL = 'DEBUG'
-    LOG_DIR_PATH = './logs'
+    LOG_DIR_PATH = os.path.join(os.path.dirname(__file__), 'logs')
     LOG_FILE_MAX_BYTES = 1024 * 1024
     LOG_FILE_BACKUP_COUNT = 1
     PID_FILE = 'example.pid'

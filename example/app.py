@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
 import flask_restful
-import logging.handlers
 from flask import Flask, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from example.common.code import Code
@@ -35,27 +33,6 @@ def _access_control(response):
     return response
 
 
-def _rotating_file_handler():
-    """
-    创建文件写入log handler
-    """
-    app_log_path = os.path.join(
-        app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs')), 'app.log'
-    )
-    if not os.path.exists(os.path.dirname(app_log_path)):
-        os.makedirs(os.path.dirname(app_log_path))
-    max_bytes = app.config.get('LOG_FILE_MAX_BYTES', 1024 * 1024 * 100)
-    backup_count = app.config.get('LOG_FILE_BACKUP_COUNT', 10)
-
-    file_handler = logging.handlers.RotatingFileHandler(
-        filename=app_log_path, maxBytes=max_bytes, backupCount=backup_count
-    )
-    file_handler.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
-    formatter = logging.Formatter('[%(asctime)s][%(levelname)s][%(filename)s][%(lineno)d]:%(message)s')
-    file_handler.setFormatter(formatter)
-    return file_handler
-
-
 def create_app(config):
     """
     创建app
@@ -74,10 +51,4 @@ def create_app(config):
     # 使用flask原生异常处理程序
     app.handle_exception = handle_exception
     app.handle_user_exception = handle_user_exception
-    # 记录文件日志
-    if not app.debug:
-        for handler in app.logger.handlers:
-            app.logger.removeHandler(handler)
-    app.logger.addHandler(_rotating_file_handler())
-    app.logger.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
     return app

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from gevent import monkey;monkey.patch_all()
+from gevent import monkey; monkey.patch_all()
 import os
+import logging.handlers
 from abc import ABC
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -17,6 +18,27 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
+
+
+def _rotating_file_handler():
+    """
+    创建logging.handlers.RotatingFileHandler对象
+    """
+    file_name = os.path.join(
+        app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs')), 'app.log'
+    )
+    if not os.path.exists(os.path.dirname(file_name)):
+        os.makedirs(os.path.dirname(file_name))
+    max_bytes = app.config.get('LOG_FILE_MAX_BYTES', 1024 * 1024 * 100)
+    backup_count = app.config.get('LOG_FILE_BACKUP_COUNT', 10)
+
+    handler = logging.handlers.RotatingFileHandler(
+        filename=file_name, maxBytes=max_bytes, backupCount=backup_count
+    )
+    handler.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
+    formatter = logging.Formatter('[%(asctime)s][%(levelname)s][%(filename)s][%(lineno)d]:%(message)s')
+    handler.setFormatter(formatter)
+    return handler
 
 
 class StandaloneApplication(BaseApplication, ABC):
@@ -45,18 +67,24 @@ def run():
     生产模式启动命令函数
     To use: python3 manager.py run
     """
-    log_path = app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
-    if not os.path.exists(os.path.dirname(log_path)):
-        os.makedirs(os.path.dirname(log_path))
+    # 记录app日志
+    for handler in app.logger.handlers:
+        app.logger.removeHandler(handler)
+    app.logger.addHandler(_rotating_file_handler())
+    app.logger.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
 
+    log_dir_path = app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
+    if not os.path.exists(os.path.dirname(log_dir_path)):
+        os.makedirs(os.path.dirname(log_dir_path))
+    # 启动gunicorn服务器
     service_config = {
         'bind': app.config.get('BIND', '0.0.0.0:5000'),
         'workers': app.config.get('WORKERS', cpu_count() * 2 + 1),
         'worker_class': 'gevent',
         'timeout': app.config.get('TIMEOUT', 60),
         'loglevel': app.config.get('LOG_LEVEL', 'info'),
-        'errorlog': os.path.join(log_path, 'error.log'),
-        'accesslog': os.path.join(log_path, 'access.log'),
+        'errorlog': os.path.join(log_dir_path, 'error.log'),
+        'accesslog': os.path.join(log_dir_path, 'access.log'),
         'pidfile': app.config.get('PID_FILE', 'run.pid'),
     }
     StandaloneApplication(app, service_config).run()
@@ -68,6 +96,7 @@ def debug():
     debug模式启动命令函数
     To use: python3 manager.py debug
     """
+    app.logger.setLevel(logging.DEBUG)
     app.run(debug=True)
 
 
