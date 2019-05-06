@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-from flask import current_app
+from flask import current_app, abort
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
-from example.app import db
+from example.app import db, hash_ids
 from example.models import ProfilesExampleModel
 from example.common.code import Code
 from example.common.func import pretty_result
 
 
-class ProfilesExampleAPI(Resource):
+class ProfilesListExampleAPI(Resource):
     """
-    示例资源类
+    示例profile list资源类
     """
+
     def __init__(self):
         self.parser = RequestParser()
 
@@ -31,7 +32,7 @@ class ProfilesExampleAPI(Resource):
         for i in profiles.items:
             items.append(
                 {
-                    'id': i.id,
+                    'id': hash_ids.encode(i.id),
                     'nickname': i.nickname,
                     'signature': i.signature
                 }
@@ -59,3 +60,81 @@ class ProfilesExampleAPI(Resource):
             current_app.logger.error(e)
             return pretty_result(Code.DB_ERROR, '数据库错误！')
         return pretty_result(Code.OK, '添加数据成功～')
+
+
+class ProfileExampleAPI(Resource):
+    """
+    示例profile资源类
+    """
+
+    def __init__(self):
+        self.parser = RequestParser()
+
+    @staticmethod
+    def get(id):
+        id = hash_ids.decode(id)
+        if not id:
+            abort(404)
+        try:
+            profile = ProfilesExampleModel.query.get(id[0])
+        except SQLAlchemyError as e:
+            current_app.logger.error(e)
+            return pretty_result(Code.DB_ERROR, '数据库错误！')
+        if not profile:
+            abort(404)
+
+        items = {
+            'id': hash_ids.encode(profile.id),
+            'nickname': profile.nickname,
+            'signature': profile.signature
+        }
+        return pretty_result(Code.OK, data=items)
+
+    def put(self, id):
+        self.parser.add_argument("nickname", type=str, location="json", required=True)
+        self.parser.add_argument("signature", type=str, location="json", required=True)
+        args = self.parser.parse_args()
+
+        id = hash_ids.decode(id)
+        if not id:
+            abort(404)
+        try:
+            profile = ProfilesExampleModel.query.get(id[0])
+        except SQLAlchemyError as e:
+            current_app.logger.error(e)
+            return pretty_result(Code.DB_ERROR, '数据库错误！')
+        if not profile:
+            abort(404)
+
+        profile.nickname = args.nickname
+        profile.signature = args.signature
+
+        try:
+            db.session.add(profile)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            current_app.logger.error(e)
+            return pretty_result(Code.DB_ERROR, '数据库错误！')
+        return pretty_result(Code.OK, '修改数据成功～')
+
+    @staticmethod
+    def delete(id):
+        id = hash_ids.decode(id)
+        if not id:
+            abort(404)
+        try:
+            profile = ProfilesExampleModel.query.get(id[0])
+        except SQLAlchemyError as e:
+            current_app.logger.error(e)
+            return pretty_result(Code.DB_ERROR, '数据库错误！')
+        if not profile:
+            abort(404)
+        try:
+            db.session.delete(profile)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            current_app.logger.error(e)
+            return pretty_result(Code.DB_ERROR, '数据库错误！')
+        return pretty_result(Code.OK, '删除数据成功～')

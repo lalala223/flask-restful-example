@@ -22,14 +22,14 @@ python manager.py run
 ```
 
 #### 示例APIs
-##### 创建profile记录  
+##### 创建一条profile数据  
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：POST  
 参数格式：JSON  
-输入参数：[nickname, signature]  
+输入参数：\[nickname, signature\]  
 调用示例：
 ```bash
-curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature":"积硅步，至千里"}' -X POST 'http://127.0.0.1:5000/api/v1/profiles'
+curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature":"积硅步，至千里!"}' -X POST 'http://127.0.0.1:5000/api/v1/profiles'
 ```
 返回示例：
 ```json
@@ -40,11 +40,11 @@ curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature"
 }
 ```
 
-##### 获取profile记录  
+##### 获取分页profile数据  
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：GET  
 参数格式：Query String  
-输入参数：[page_num, page_size]  
+输入参数：\[page_num, page_size\]  
 调用示例：
 ```bash
 curl 'http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10'
@@ -57,14 +57,82 @@ curl 'http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10'
     "data": {
         "page_num": 1,
         "page_size": 10,
-        "total": 1,
+        "total": 3,
         "items": [
             {
-                "id": 1,
-                "nickname": "lalala223",
-                "signature": "积硅步，至千里"
+                "id": "2v5y45gr",
+                "nickname": "test1",
+                "signature": "积硅步，至千里!"
+            },
+            {
+                "id": "m6k1zl84",
+                "nickname": "test2",
+                "signature": "你喜欢青草还是羽毛。"
+            },
+            {
+                "id": "jqlpw5v6",
+                "nickname": "test3",
+                "signature": "吃个苹果吧~"
             }
         ]
     }
+}
+```
+
+##### 获取一条profile数据  
+调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用方法：GET  
+参数格式：URL PARAM  
+输入参数：\[id\]  
+调用示例：
+```bash
+curl 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
+```
+返回示例：
+```json
+{
+    "code": 0,
+    "msg": "ok",
+    "data": {
+        "id": "2v5y45gr",
+        "nickname": "test1",
+        "signature": "积硅步，至千里!"
+    }
+}
+```
+
+##### 修改一条profile数据  
+调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用方法：PUT  
+参数格式：URL PARAM + JSON  
+输入参数：\[id, nickname, signature\]   
+调用示例：
+```bash
+curl -H 'Content-type: application/json' -d '{"nickname":"test1","signature":"喜欢独处，热爱自由!"}' -X PUT 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
+```
+返回示例：
+```json
+{
+    "code": 0,
+    "msg": "修改数据成功～",
+    "data": null
+}
+```
+
+##### 删除一条profile数据   
+调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用方法：DELETE  
+参数格式：URL PARAM  
+输入参数：\[id\]   
+调用示例：
+```bash
+curl -X DELETE 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
+```
+返回示例：
+```json
+{
+    "code": 0,
+    "msg": "删除数据成功～",
+    "data": null
 }
 ```

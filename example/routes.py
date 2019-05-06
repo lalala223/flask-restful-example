@@ -7,4 +7,5 @@ api_v1 = Blueprint('api_v1', __name__)
 
 api = Api(api_v1)
 
-api.add_resource(profiles.ProfilesExampleAPI, '/profiles')
+api.add_resource(profiles.ProfilesListExampleAPI, '/profiles')
+api.add_resource(profiles.ProfileExampleAPI, '/profiles/<string:id>')

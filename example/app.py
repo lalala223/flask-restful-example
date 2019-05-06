@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
+import string
 import flask_restful
 from flask import Flask, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from hashids import Hashids
 from example.common.code import Code
 from example.common.func import pretty_result
 
 app = Flask(__name__)
 
 db = SQLAlchemy()
+
+hash_ids = Hashids(salt='hvwptlmj129d5quf', min_length=8, alphabet=string.ascii_lowercase + string.digits)
 
 # 保留flask原生异常处理
 handle_exception = app.handle_exception
