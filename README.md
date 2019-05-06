@@ -26,7 +26,7 @@ python manager.py run
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：POST  
 参数格式：JSON  
-输入参数：\[nickname, signature\]  
+输入参数：[nickname, signature]  
 调用示例：
 ```bash
 curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature":"积硅步，至千里!"}' -X POST 'http://127.0.0.1:5000/api/v1/profiles'
@@ -44,7 +44,7 @@ curl -H 'Content-type: application/json' -d '{"nickname":"lalala223","signature"
 调用接口：http://127.0.0.1/api/v1/profiles  
 调用方法：GET  
 参数格式：Query String  
-输入参数：\[page_num, page_size\]  
+输入参数：[page_num, page_size]  
 调用示例：
 ```bash
 curl 'http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10'
@@ -80,10 +80,10 @@ curl 'http://127.0.0.1:5000/api/v1/profiles?page_num=1&page_size=10'
 ```
 
 ##### 获取一条profile数据  
-调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用接口：http://127.0.0.1/api/v1/profiles/[id]  
 调用方法：GET  
 参数格式：URL PARAM  
-输入参数：\[id\]  
+输入参数：[id]  
 调用示例：
 ```bash
 curl 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
@@ -102,10 +102,10 @@ curl 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
 ```
 
 ##### 修改一条profile数据  
-调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用接口：http://127.0.0.1/api/v1/profiles/[id]  
 调用方法：PUT  
 参数格式：URL PARAM + JSON  
-输入参数：\[id, nickname, signature\]   
+输入参数：[id, nickname, signature]   
 调用示例：
 ```bash
 curl -H 'Content-type: application/json' -d '{"nickname":"test1","signature":"喜欢独处，热爱自由!"}' -X PUT 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
@@ -120,10 +120,10 @@ curl -H 'Content-type: application/json' -d '{"nickname":"test1","signature":"�
 ```
 
 ##### 删除一条profile数据   
-调用接口：http://127.0.0.1/api/v1/profiles/\[id\]  
+调用接口：http://127.0.0.1/api/v1/profiles/[id]  
 调用方法：DELETE  
 参数格式：URL PARAM  
-输入参数：\[id\]   
+输入参数：[id]   
 调用示例：
 ```bash
 curl -X DELETE 'http://127.0.0.1:5000/api/v1/profiles/2v5y45gr'
