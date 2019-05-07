@@ -26,24 +26,25 @@ class ProfilesListExampleAPI(Resource):
             profiles = ProfilesExampleModel.query.paginate(args.page_num, args.page_size, error_out=False)
         except SQLAlchemyError as e:
             current_app.logger.error(e)
+            db.session.rollback()
             return pretty_result(Code.DB_ERROR, '数据库错误！')
-
-        items = []
-        for i in profiles.items:
-            items.append(
-                {
-                    'id': hash_ids.encode(i.id),
-                    'nickname': i.nickname,
-                    'signature': i.signature
-                }
-            )
-        data = {
-            'page_num': args.page_num,
-            'page_size': args.page_size,
-            'total': profiles.total,
-            'items': items
-        }
-        return pretty_result(Code.OK, data=data)
+        else:
+            items = []
+            for i in profiles.items:
+                items.append(
+                    {
+                        'id': hash_ids.encode(i.id),
+                        'nickname': i.nickname,
+                        'signature': i.signature
+                    }
+                )
+            data = {
+                'page_num': args.page_num,
+                'page_size': args.page_size,
+                'total': profiles.total,
+                'items': items
+            }
+            return pretty_result(Code.OK, data=data)
 
     def post(self):
         self.parser.add_argument("nickname", type=str, location="json", required=True)
@@ -56,10 +57,11 @@ class ProfilesListExampleAPI(Resource):
             db.session.add(profile)
             db.session.commit()
         except SQLAlchemyError as e:
-            db.session.rollback()
             current_app.logger.error(e)
+            db.session.rollback()
             return pretty_result(Code.DB_ERROR, '数据库错误！')
-        return pretty_result(Code.OK, '添加数据成功～')
+        else:
+            return pretty_result(Code.OK, '添加数据成功～')
 
 
 class ProfileExampleAPI(Resource):
@@ -73,22 +75,22 @@ class ProfileExampleAPI(Resource):
     @staticmethod
     def get(id):
         id = hash_ids.decode(id)
-        if not id:
-            abort(404)
+        if not id: abort(404)
+
         try:
             profile = ProfilesExampleModel.query.get(id[0])
+            if not profile: abort(404)
         except SQLAlchemyError as e:
             current_app.logger.error(e)
+            db.session.rollback()
             return pretty_result(Code.DB_ERROR, '数据库错误！')
-        if not profile:
-            abort(404)
-
-        items = {
-            'id': hash_ids.encode(profile.id),
-            'nickname': profile.nickname,
-            'signature': profile.signature
-        }
-        return pretty_result(Code.OK, data=items)
+        else:
+            items = {
+                'id': hash_ids.encode(profile.id),
+                'nickname': profile.nickname,
+                'signature': profile.signature
+            }
+            return pretty_result(Code.OK, data=items)
 
     def put(self, id):
         self.parser.add_argument("nickname", type=str, location="json", required=True)
@@ -96,45 +98,38 @@ class ProfileExampleAPI(Resource):
         args = self.parser.parse_args()
 
         id = hash_ids.decode(id)
-        if not id:
-            abort(404)
+        if not id: abort(404)
+
         try:
             profile = ProfilesExampleModel.query.get(id[0])
-        except SQLAlchemyError as e:
-            current_app.logger.error(e)
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
-        if not profile:
-            abort(404)
+            if not profile: abort(404)
 
-        profile.nickname = args.nickname
-        profile.signature = args.signature
+            profile.nickname = args.nickname
+            profile.signature = args.signature
 
-        try:
             db.session.add(profile)
             db.session.commit()
         except SQLAlchemyError as e:
-            db.session.rollback()
             current_app.logger.error(e)
+            db.session.rollback()
             return pretty_result(Code.DB_ERROR, '数据库错误！')
-        return pretty_result(Code.OK, '修改数据成功～')
+        else:
+            return pretty_result(Code.OK, '修改数据成功～')
 
     @staticmethod
     def delete(id):
         id = hash_ids.decode(id)
-        if not id:
-            abort(404)
+        if not id: abort(404)
+
         try:
             profile = ProfilesExampleModel.query.get(id[0])
-        except SQLAlchemyError as e:
-            current_app.logger.error(e)
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
-        if not profile:
-            abort(404)
-        try:
+            if not profile: abort(404)
+
             db.session.delete(profile)
             db.session.commit()
         except SQLAlchemyError as e:
-            db.session.rollback()
             current_app.logger.error(e)
+            db.session.rollback()
             return pretty_result(Code.DB_ERROR, '数据库错误！')
-        return pretty_result(Code.OK, '删除数据成功～')
+        else:
+            return pretty_result(Code.OK, '删除数据成功～')
