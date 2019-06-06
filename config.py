@@ -12,11 +12,12 @@ class ProductionConfig(object):
     BIND = '127.0.0.1:5000'
     TIMEOUT = 60
     WORKERS = multiprocessing.cpu_count() * 2 + 1
+    WORKER_CONNECTIONS = 1000
     LOG_LEVEL = 'INFO'
     LOG_DIR_PATH = os.path.join(os.path.dirname(__file__), 'logs')
     LOG_FILE_MAX_BYTES = 1024 * 1024 * 100
     LOG_FILE_BACKUP_COUNT = 10
-    PID_FILE = 'example.pid'
+    PID_FILE = 'run.pid'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'example.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -28,11 +29,12 @@ class DevelopConfig(object):
     BIND = '0.0.0.0:5000'
     TIMEOUT = 30
     WORKERS = 2
+    WORKER_CONNECTIONS = 1000
     LOG_LEVEL = 'DEBUG'
     LOG_DIR_PATH = os.path.join(os.path.dirname(__file__), 'logs')
     LOG_FILE_MAX_BYTES = 1024 * 1024
     LOG_FILE_BACKUP_COUNT = 1
-    PID_FILE = 'example.pid'
+    PID_FILE = 'run.pid'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.dirname(__file__), 'example.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

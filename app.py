@@ -4,8 +4,7 @@ import flask_restful
 from flask import Flask, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from hashids import Hashids
-from example.common.code import Code
-from example.common.func import pretty_result
+from common import Code, pretty_result
 
 app = Flask(__name__)
 
@@ -33,7 +32,8 @@ def _access_control(response):
     """
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'GET,HEAD,PUT,PATCH,POST,DELETE'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    response.headers['Access-Control-Max-Age'] = 86400
     return response
 
 
@@ -50,7 +50,7 @@ def create_app(config):
     # 数据库初始化
     db.init_app(app)
     # 注册蓝图
-    from example.routes import api_v1
+    from routes import api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1')
     # 使用flask原生异常处理程序
     app.handle_exception = handle_exception

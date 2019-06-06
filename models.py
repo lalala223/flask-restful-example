@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from example.app import db
+from app import db
 
 
 class BaseModel(object):

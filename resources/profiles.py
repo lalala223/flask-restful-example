@@ -3,10 +3,9 @@ from flask import current_app, abort
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
-from example.app import db, hash_ids
-from example.models import ProfilesExampleModel
-from example.common.code import Code
-from example.common.func import pretty_result
+from app import db, hash_ids
+from models import ProfilesExampleModel
+from common import Code, pretty_result
 
 
 class ProfilesListExampleAPI(Resource):

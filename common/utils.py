@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from example.common.code import CODE_MSG_MAP
+import hashlib
+from .code import CODE_MSG_MAP
 
 
 def pretty_result(code, msg=None, data=None):
@@ -10,3 +11,9 @@ def pretty_result(code, msg=None, data=None):
         'msg': msg,
         'data': data
     }
+
+
+def hash_md5(data):
+    md5 = hashlib.md5()
+    md5.update(data)
+    return md5.hexdigest()

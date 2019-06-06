@@ -8,8 +8,10 @@ from flask_migrate import Migrate, MigrateCommand
 from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 from multiprocessing import cpu_count
-from example import create_app, db
+from app import create_app, db
 from config import Config
+
+DEFAULT_LOG_DIR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
 
 app = create_app(Config)
 
@@ -20,18 +22,16 @@ migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
 
-def _rotating_file_handler():
+def rotating_file_handler():
     """
     创建logging.handlers.RotatingFileHandler对象
     """
-    file_name = os.path.join(
-        app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs')), 'app.log'
-    )
+    file_name = os.path.join(app.config.get('LOG_DIR_PATH', DEFAULT_LOG_DIR_PATH), 'app.log')
     if not os.path.exists(os.path.dirname(file_name)):
         os.makedirs(os.path.dirname(file_name))
+
     max_bytes = app.config.get('LOG_FILE_MAX_BYTES', 1024 * 1024 * 100)
     backup_count = app.config.get('LOG_FILE_BACKUP_COUNT', 10)
-
     handler = logging.handlers.RotatingFileHandler(
         filename=file_name, maxBytes=max_bytes, backupCount=backup_count
     )
@@ -67,15 +67,16 @@ def run():
     生产模式启动命令函数
     To use: python3 manager.py run
     """
-    # 记录app日志
+    # 记录项目app日志
     for handler in app.logger.handlers:
         app.logger.removeHandler(handler)
-    app.logger.addHandler(_rotating_file_handler())
+    app.logger.addHandler(rotating_file_handler())
     app.logger.setLevel(app.config.get('LOG_LEVEL', logging.INFO))
-
-    log_dir_path = app.config.get('LOG_DIR_PATH', os.path.join(os.path.dirname(__file__), 'logs'))
+    # 设置gunicorn日志文件存放路径
+    log_dir_path = app.config.get('LOG_DIR_PATH', DEFAULT_LOG_DIR_PATH)
     if not os.path.exists(os.path.dirname(log_dir_path)):
         os.makedirs(os.path.dirname(log_dir_path))
+
     # 启动gunicorn服务器
     service_config = {
         'bind': app.config.get('BIND', '0.0.0.0:5000'),
@@ -86,6 +87,7 @@ def run():
         'errorlog': os.path.join(log_dir_path, 'error.log'),
         'accesslog': os.path.join(log_dir_path, 'access.log'),
         'pidfile': app.config.get('PID_FILE', 'run.pid'),
+        'worker_connections': app.config.get('WORKER_CONNECTIONS', 1000)
     }
     StandaloneApplication(app, service_config).run()
 
