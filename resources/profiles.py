@@ -4,8 +4,8 @@ from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
 from app import db, hash_ids
-from models import ProfilesExampleModel
 from common import Code, pretty_result
+from models.profiles import ProfilesExampleModel
 
 
 class ProfilesListExampleAPI(Resource):

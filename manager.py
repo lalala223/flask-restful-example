@@ -76,7 +76,6 @@ def run():
     log_dir_path = app.config.get('LOG_DIR_PATH', DEFAULT_LOG_DIR_PATH)
     if not os.path.exists(os.path.dirname(log_dir_path)):
         os.makedirs(os.path.dirname(log_dir_path))
-
     # 启动gunicorn服务器
     service_config = {
         'bind': app.config.get('BIND', '0.0.0.0:5000'),
