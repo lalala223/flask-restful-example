@@ -50,7 +50,7 @@ def create_app(config):
     # 数据库初始化
     db.init_app(app)
     # 注册蓝图
-    from routes import api_v1
+    from apis import api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1')
     # 使用flask原生异常处理程序
     app.handle_exception = handle_exception
