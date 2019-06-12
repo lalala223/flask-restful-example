@@ -2,13 +2,11 @@
 import string
 import flask_restful
 from flask import Flask, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from hashids import Hashids
+from models import db
 from common import Code, pretty_result
 
 app = Flask(__name__)
-
-db = SQLAlchemy()
 
 hash_ids = Hashids(salt='hvwptlmj129d5quf', min_length=8, alphabet=string.ascii_lowercase + string.digits)
 
@@ -22,7 +20,13 @@ def _custom_abort(http_status_code, **kwargs):
     自定义abort 400响应数据格式
     """
     if http_status_code == 400:
-        return abort(jsonify(pretty_result(Code.PARAM_ERROR, data=kwargs.get('message'))))
+        message = kwargs.get('message')
+        if isinstance(message, dict):
+            param, info = list(message.items())[0]
+            data = '{}:{}!'.format(param, info)
+            return abort(jsonify(pretty_result(Code.PARAM_ERROR, data=data)))
+        else:
+            return abort(jsonify(pretty_result(Code.PARAM_ERROR, data=message)))
     return abort(http_status_code)
 
 

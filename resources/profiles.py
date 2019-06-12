@@ -3,7 +3,8 @@ from flask import current_app, abort
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
-from app import db, hash_ids
+from app import hash_ids
+from models import db
 from common import Code, pretty_result
 from models.profiles import ProfilesModel
 
