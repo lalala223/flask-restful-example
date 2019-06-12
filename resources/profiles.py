@@ -5,10 +5,10 @@ from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
 from app import db, hash_ids
 from common import Code, pretty_result
-from models.profiles import ProfilesExampleModel
+from models.profiles import ProfilesModel
 
 
-class ProfilesListExampleAPI(Resource):
+class ProfileListResource(Resource):
     """
     示例profile list资源类
     """
@@ -22,7 +22,7 @@ class ProfilesListExampleAPI(Resource):
         args = self.parser.parse_args()
 
         try:
-            profiles = ProfilesExampleModel.query.paginate(args.page_num, args.page_size, error_out=False)
+            profiles = ProfilesModel.query.paginate(args.page_num, args.page_size, error_out=False)
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
@@ -50,7 +50,7 @@ class ProfilesListExampleAPI(Resource):
         self.parser.add_argument("signature", type=str, location="json", required=True)
         args = self.parser.parse_args()
 
-        profile = ProfilesExampleModel(nickname=args.nickname, signature=args.signature)
+        profile = ProfilesModel(nickname=args.nickname, signature=args.signature)
 
         try:
             db.session.add(profile)
@@ -63,7 +63,7 @@ class ProfilesListExampleAPI(Resource):
             return pretty_result(Code.OK, '添加数据成功～')
 
 
-class ProfileExampleAPI(Resource):
+class ProfileResource(Resource):
     """
     示例profile资源类
     """
@@ -77,7 +77,7 @@ class ProfileExampleAPI(Resource):
         if not id: abort(404)
 
         try:
-            profile = ProfilesExampleModel.query.get(id[0])
+            profile = ProfilesModel.query.get(id[0])
             if not profile: abort(404)
         except SQLAlchemyError as e:
             current_app.logger.error(e)
@@ -100,7 +100,7 @@ class ProfileExampleAPI(Resource):
         if not id: abort(404)
 
         try:
-            profile = ProfilesExampleModel.query.get(id[0])
+            profile = ProfilesModel.query.get(id[0])
             if not profile: abort(404)
 
             profile.nickname = args.nickname
@@ -121,7 +121,7 @@ class ProfileExampleAPI(Resource):
         if not id: abort(404)
 
         try:
-            profile = ProfilesExampleModel.query.get(id[0])
+            profile = ProfilesModel.query.get(id[0])
             if not profile: abort(404)
 
             db.session.delete(profile)

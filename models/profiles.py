@@ -3,7 +3,7 @@ from app import db
 from .base import BaseModel
 
 
-class ProfilesExampleModel(db.Model, BaseModel):
+class ProfilesModel(db.Model, BaseModel):
     """
     示例模型类
     """
