@@ -5,7 +5,7 @@ from flask_restful.reqparse import RequestParser
 from sqlalchemy.exc import SQLAlchemyError
 from app import hash_ids
 from models import db
-from common import Code, pretty_result
+from common import code, pretty_result
 from models.profiles import ProfilesModel
 
 
@@ -27,7 +27,7 @@ class ProfileListResource(Resource):
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
+            return pretty_result(code.DB_ERROR, '数据库错误！')
         else:
             items = []
             for i in profiles.items:
@@ -44,7 +44,7 @@ class ProfileListResource(Resource):
                 'total': profiles.total,
                 'items': items
             }
-            return pretty_result(Code.OK, data=data)
+            return pretty_result(code.OK, data=data)
 
     def post(self):
         self.parser.add_argument("nickname", type=str, location="json", required=True)
@@ -59,9 +59,9 @@ class ProfileListResource(Resource):
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
+            return pretty_result(code.DB_ERROR, '数据库错误！')
         else:
-            return pretty_result(Code.OK, '添加数据成功～')
+            return pretty_result(code.OK)
 
 
 class ProfileResource(Resource):
@@ -83,14 +83,14 @@ class ProfileResource(Resource):
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
+            return pretty_result(code.DB_ERROR, '数据库错误！')
         else:
-            items = {
+            item = {
                 'id': hash_ids.encode(profile.id),
                 'nickname': profile.nickname,
                 'signature': profile.signature
             }
-            return pretty_result(Code.OK, data=items)
+            return pretty_result(code.OK, data=item)
 
     def put(self, id):
         self.parser.add_argument("nickname", type=str, location="json", required=True)
@@ -112,9 +112,9 @@ class ProfileResource(Resource):
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
+            return pretty_result(code.DB_ERROR, '数据库错误！')
         else:
-            return pretty_result(Code.OK, '修改数据成功～')
+            return pretty_result(code.OK)
 
     @staticmethod
     def delete(id):
@@ -130,6 +130,6 @@ class ProfileResource(Resource):
         except SQLAlchemyError as e:
             current_app.logger.error(e)
             db.session.rollback()
-            return pretty_result(Code.DB_ERROR, '数据库错误！')
+            return pretty_result(code.DB_ERROR, '数据库错误！')
         else:
-            return pretty_result(Code.OK, '删除数据成功～')
+            return pretty_result(code.OK)

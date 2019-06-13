@@ -4,7 +4,7 @@ import flask_restful
 from flask import Flask, abort, jsonify
 from hashids import Hashids
 from models import db
-from common import Code, pretty_result
+from common import code, pretty_result
 
 app = Flask(__name__)
 
@@ -24,9 +24,9 @@ def _custom_abort(http_status_code, **kwargs):
         if isinstance(message, dict):
             param, info = list(message.items())[0]
             data = '{}:{}!'.format(param, info)
-            return abort(jsonify(pretty_result(Code.PARAM_ERROR, data=data)))
+            return abort(jsonify(pretty_result(code.PARAM_ERROR, data=data)))
         else:
-            return abort(jsonify(pretty_result(Code.PARAM_ERROR, data=message)))
+            return abort(jsonify(pretty_result(code.PARAM_ERROR, data=message)))
     return abort(http_status_code)
 
 
@@ -54,7 +54,7 @@ def create_app(config):
     # 数据库初始化
     db.init_app(app)
     # 注册蓝图
-    from apis import api_v1
+    from routes import api_v1
     app.register_blueprint(api_v1, url_prefix='/api/v1')
     # 使用flask原生异常处理程序
     app.handle_exception = handle_exception

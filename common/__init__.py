@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from .code import Code, CODE_MSG_MAP
-from .utils import pretty_result
+from .utils import pretty_result, hash_md5
 
-__all__ = ['Code', 'CODE_MSG_MAP', 'pretty_result']
+__all__ = ['pretty_result', 'hash_md5']

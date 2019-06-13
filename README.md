@@ -20,3 +20,8 @@ python manager.py debug
 ```
 python manager.py run
 ```
+
+#### Tests
+```
+python -m tests.testapp
+```

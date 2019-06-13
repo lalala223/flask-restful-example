@@ -8,9 +8,9 @@ from gunicorn.app.base import BaseApplication
 from gunicorn.six import iteritems
 from multiprocessing import cpu_count
 from app import create_app, db
-from config import Config
+from config import config
 
-app = create_app(Config)
+app = create_app(config)
 
 manager = Manager(app)
 

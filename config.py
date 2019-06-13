@@ -42,6 +42,6 @@ class DevelopConfig(object):
 
 
 if MODE == 'production':
-    Config = ProductionConfig
+    config = ProductionConfig
 else:
-    Config = DevelopConfig
+    config = DevelopConfig
