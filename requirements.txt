@@ -1,6 +1,6 @@
 alembic==1.0.8
 aniso8601==5.1.0
-certifi==2018.11.29
+certifi==2022.12.7
 Click==7.0
 Flask==1.0.2
 Flask-Migrate==2.4.0
