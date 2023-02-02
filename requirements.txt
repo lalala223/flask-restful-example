@@ -20,5 +20,5 @@ pytz==2018.9
 relativetimebuilder==0.2.0
 six==1.12.0
 SQLAlchemy==1.3.0
-Werkzeug==0.14.1
+Werkzeug==0.15.5
 hashids==1.2.0
